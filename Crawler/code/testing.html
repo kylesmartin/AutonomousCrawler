@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QCodeDecoder - Image</title>
+</head>
+<body>
+
+  <h1>QCode Decoder also decodes directly from an image</h1>
+
+  <img src="https://i.imgur.com/8r2p1h9.png" alt="qr code">
+  <button id="decode">Decode!</button>
+
+  <script src="bower_components/qcode-decoder/build/qcode-decoder.min.js"></script>
+  <script>
+  var qr = new QCodeDecoder();
+  if (!(qr.isCanvasSupported() && qr.hasGetUserMedia())) {
+    alert('Your browser doesn\'t match the required specs.');
+    throw new Error('Canvas and getUserMedia are required');
+  }
+  var btn = document.querySelector('button#decode');
+  var img = document.querySelector('img');
+  btn.onclick = function () {
+    qr.decodeFromImage(img, function (err, result) {
+      if (err) throw err;
+      console.log(result);
+    });
+  };
+  </script>
+</body>
+</html>

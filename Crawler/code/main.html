@@ -1,0 +1,366 @@
+ <!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+<script src="bower_components/qcode-decoder/build/qcode-decoder.min.js"></script>
+<script>
+window.onload = function () {
+	//get request xhr variable
+
+	var xhrOnLoad = new XMLHttpRequest();
+	var xhrAddPoint = new XMLHttpRequest();
+	//using response from get request, set chart contents
+	xhrOnLoad.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+  		var dataText = JSON.parse(xhrOnLoad.responseText);
+  		document.getElementById("exampleFormControlTextarea1").innerHTML = JSON.stringify(dataText.slice(dataText.length-30,dataText.length).reverse());
+  		console.log(dataText);
+  		console.log(dataText[0]);
+  		console.log(dataText[0].name);
+  		console.log(dataText.length);
+    }
+	};
+
+	//send get request for file data
+  xhrOnLoad.open("GET", '/logs', true);
+	xhrOnLoad.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhrOnLoad.send();
+
+  //repeat this function every second to update chart data
+  var socket = io();
+	socket.on('message', function(msg){
+		document.getElementById("exampleFormControlTextarea1").value = JSON.stringify(msg)+document.getElementById("exampleFormControlTextarea1").value;
+  });
+}
+
+document.onkeydown = function(e) {
+  switch (e.keyCode) {
+    case 32:
+      console.log("stop!")
+      document.getElementById("stopBtn").click();
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="blue";
+
+      break;
+    case 37:
+      console.log("left!")
+      document.getElementById("leftBtn").click();
+      document.getElementById("leftBtn").style.color= "blue";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+
+      break;
+
+    case 38:
+      console.log("up!")
+      document.getElementById("upBtn").click();
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "blue";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 39:
+      console.log("right!")
+      document.getElementById("rightBtn").click();
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "blue";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 40:
+      console.log("down!")
+      document.getElementById("downBtn").click();
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "blue ";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+  }
+};
+document.onkeyup = function(e) {
+  switch (e.keyCode) {
+    case 37:
+      console.log("left!")
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 38:
+      console.log("up!")
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 39:
+      console.log("right!")
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 40:
+      console.log("down!")
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white ";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+
+    case 32:
+      console.log("stop!")
+      document.getElementById("leftBtn").style.color= "white";
+      document.getElementById("rightBtn").style.color= "white";
+      document.getElementById("upBtn").style.color= "white";
+      document.getElementById("downBtn").style.color= "white ";
+      document.getElementById("stopBtn").style.color="white";
+      break;
+  }
+};
+
+function leftFN() {
+  console.log("here");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         console.log("meep");
+      }
+  };
+  xhttp.open("GET", "/params?speed=0&steer=-1&start=0", true);
+  xhttp.send();
+}
+
+function rightFN() {
+  console.log("here");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         console.log("meep");
+      }
+  };
+  xhttp.open("GET", "/params?speed=0&steer=1&start=0", true);
+  xhttp.send();
+}
+
+function fwdFN() {
+  console.log("here");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         console.log("meep");
+      }
+  };
+  xhttp.open("GET", "/params?speed=1&steer=0&start=0", true);
+  xhttp.send();
+}
+
+function stopFN() {
+  console.log("here");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         console.log("meep");
+      }
+  };
+  xhttp.open("GET", "/params?speed=0&steer=0&start=1", true);
+  xhttp.send();
+}
+
+function bwdFN() {
+  console.log("here");
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         console.log("meep");
+      }
+  };
+  xhttp.open("GET", "/params?speed=-1&steer=0&start=0", true);
+  xhttp.send();
+}
+
+</script>
+<script type="text/javascript">
+
+/* Copyright (C) 2007 Richard Atterer, richardĀ©atterer.net
+   This program is free software; you can redistribute it and/or modify it
+   under the terms of the GNU General Public License, version 2. See the file
+   COPYING for details. */
+
+var imageNr = 0; // Serial number of current image
+var finished = new Array(); // References to img objects which have finished downloading
+var paused = false;
+
+function createImageLayer() {
+  var img = new Image();
+  img.style.position = "absolute";
+  img.style.zIndex = -1;
+  img.onload = imageOnload;
+  img.onclick = imageOnclick;
+  img.src = "http://192.168.1.122:8080/?action=snapshot&n=" + (++imageNr);
+  var webcam = document.getElementById("webcam");
+  webcam.insertBefore(img, webcam.firstChild);
+  console.log("testing1");
+}
+
+// Two layers are always present (except at the very beginning), to avoid flicker
+function imageOnload() {
+  this.style.zIndex = imageNr; // Image finished, bring to front!
+  while (1 < finished.length) {
+    var del = finished.shift(); // Delete old image(s) from document
+    del.parentNode.removeChild(del);
+  }
+  finished.push(this);
+  if (!paused) createImageLayer();
+}
+
+function imageOnclick() { // Clicking on the image will pause the stream
+  paused = !paused;
+  if (!paused) createImageLayer();
+}
+
+</script>
+<style>
+.leftBtn:active, .active {
+  background-color:red;
+  color: white;
+          }
+</style>
+</head>
+<body onload="createImageLayer();">
+  <div class="container" style="height:100vh; width:100vw" >
+  <div class ="row" style="height:40vh; width:100vw; background-color:green">
+    <div class="row" style="height:30vh; width:50vw; text-align: center; display: inline-block; margin-top: 5%; margin-left: 17%"
+    <div id="webcam"><noscript><img src="http://192.168.1.122:8080/?action=snapshot" style="width: 500px; height: 600px;"/></noscript></div>
+
+
+  </div>
+  <div class = "row justify-content-md-center" style="height:60vh; width:100vw; background-color:blue;">
+    <button type="button" id="upBtn" onclick="fwdFN()" class="btn btn-primary" style="margin-left:24.75%; margin-top:5%; width:200px; height: 80px; font-size: 30px;">
+   Forward!
+</button>
+<br>
+<button type="button" id="leftBtn" onclick="rightFN()" class="btn btn-primary" style="margin-left:18%; margin-right:0%; width:200px; height: 80px; font-size: 30px;">
+Left!
+</button> &nbsp;&nbsp;&nbsp;&nbsp;
+<button type="button" id="rightBtn" onclick="leftFN()" class="btn btn-primary" style="width:200px; height: 80px; font-size: 30px;">
+Right!
+</button>
+
+<button type="button" id="stopBtn" onclick="stopFN()" class="btn btn-primary" style="width:200px; height: 80px; font-size: 30px; margin-left: 10%;">Stop!</button>
+<div class="row justify-content-md-right" style="height:41vh; width: 30vw; float:right; margin-right:3px ">
+<div class="form-group">
+<label for="exampleFormControlTextarea1">Fob Unlock Logs</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="15" cols="2"></textarea>
+</div>
+</div>
+
+<button type="button" id="downBtn" onclick="bwdFN()" class="btn btn-primary" style="margin-left:24.75%; margin-top:.5%;width:200px; height: 80px; font-size: 30px;">
+Backward!
+</button>
+<button type="button" class="btn btn-primary" style="margin-left: 45%; width: 150px; height: 50px; font-size: 20px;">Split 3 <span class="badge">1:05</span></button>
+
+    </div>
+  </div>
+
+<script>
+function find() {
+	console.log("Device Pinged!");
+}
+function waterSubmit() {
+	if (document.getElementById("example-number-input").value > 0) {
+		console.log(document.getElementById("example-number-input").value);
+	} else {
+		alert("Please enter a valid input!");
+	}
+}
+$   (document).ready(function() {
+    //set initial state.
+    $('#steps').change(function() {
+        if($(this).is(":checked")) {
+            console.log("Steps ON");
+						const Http = new XMLHttpRequest();
+						console.log("1");
+						const url='http://localhost:3000/vibration';
+						console.log("2");
+						Http.open("POST", url);
+						console.log("3");
+						Http.setRequestHeader("Content-Type", "application/json");
+						console.log("4");
+						Http.send(JSON.stringify({"state": "1"}));
+						console.log("5");
+						Http.onreadystatechange = (e) => {
+							  console.log("Http");
+							}
+        }
+				else {
+					console.log("Steps OFF");
+				}
+    });
+		$('#battery').change(function() {
+				if($(this).is(":checked")) {
+						console.log("Battery ON");
+				}
+				else {
+					console.log("Battery OFF");
+				}
+		});
+		$('#temp').change(function() {
+				if($(this).is(":checked")) {
+						console.log("Temp ON");
+				}
+				else {
+					console.log("Temp OFF");
+				}
+		});
+		$('#water').change(function() {
+				if($(this).is(":checked")) {
+						console.log("Water ON");
+				}
+				else {
+					console.log("Water OFF");
+				}
+		});
+});
+</script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<script
+
+</body>
+</html>
